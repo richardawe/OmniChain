@@ -1,10 +1,11 @@
 [phases.setup]
-nixPkgs = ["nodejs", "npm", "php", "php82Packages.composer"]
+nixPkgs = ["nodejs", "php", "php82Packages.composer", "php82Packages.ext-pdo", "php82Packages.ext-pdo_pgsql"]
 
 [phases.install]
 cmds = [
     "composer install --no-dev --optimize-autoloader",
-    "npm ci && npm run build"
+    "npm ci",
+    "npm run build"
 ]
 
 [phases.build]
