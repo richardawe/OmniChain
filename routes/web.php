@@ -28,6 +28,17 @@ Route::get('/status', function () {
     ]);
 });
 
+Route::get('/info', function () {
+    return response()->json([
+        'php_version' => PHP_VERSION,
+        'laravel_version' => app()->version(),
+        'environment' => app()->environment(),
+        'debug' => config('app.debug'),
+        'timezone' => config('app.timezone'),
+        'extensions' => get_loaded_extensions()
+    ]);
+});
+
 // Basic root route for Railway healthcheck
 Route::get('/', function () {
     return response()->json([
