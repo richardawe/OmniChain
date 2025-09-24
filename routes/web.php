@@ -5,17 +5,40 @@ use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\DriverAppController;
 use App\Http\Controllers\Admin\DriverManagementController;
 
-// Health check route for Railway
+// Simple health check route for Railway
 Route::get('/health', function () {
     return response()->json([
         'status' => 'healthy',
-        'timestamp' => now(),
-        'database' => DB::connection()->getPdo() ? 'connected' : 'disconnected',
-        'cache' => Cache::store()->getStore() ? 'connected' : 'disconnected'
+        'timestamp' => now()->toISOString(),
+        'message' => 'OmniChain is running'
     ]);
 });
 
-Route::get('/', [DashboardController::class, 'index'])->name('dashboard');
+// Test routes for debugging
+Route::get('/test', function () {
+    return 'OmniChain is working!';
+});
+
+Route::get('/status', function () {
+    return response()->json([
+        'status' => 'ok',
+        'time' => date('Y-m-d H:i:s'),
+        'php_version' => PHP_VERSION,
+        'laravel_version' => app()->version()
+    ]);
+});
+
+// Basic root route for Railway healthcheck
+Route::get('/', function () {
+    return response()->json([
+        'message' => 'OmniChain API is running',
+        'version' => '1.0.0',
+        'timestamp' => now()->toISOString(),
+        'status' => 'healthy'
+    ]);
+});
+
+Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 Route::get('/track-shipment', function () {
     return inertia('TrackShipment');
 })->name('track-shipment');
