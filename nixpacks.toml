@@ -9,4 +9,4 @@ cmds = [
 ]
 
 [start]
-cmd = "cd /app && php artisan serve --host=0.0.0.0 --port=$PORT --no-reload"
+cmd = "cd /app && ./start-with-migrations.sh"

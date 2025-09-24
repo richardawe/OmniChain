@@ -4,7 +4,7 @@
     "builder": "NIXPACKS"
   },
   "deploy": {
-    "startCommand": "cd /app && php artisan serve --host=0.0.0.0 --port=$PORT --no-reload",
+    "startCommand": "cd /app && ./start-with-migrations.sh",
     "healthcheckPath": "/",
     "healthcheckTimeout": 200,
     "restartPolicyType": "ON_FAILURE",
