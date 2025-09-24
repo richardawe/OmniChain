@@ -9,4 +9,4 @@ cmds = [
 ]
 
 [start]
-cmd = "cd /app && ./start-no-db.sh"
+cmd = "cd /app && ./start-with-migrations.sh"
