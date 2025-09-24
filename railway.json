@@ -4,7 +4,7 @@
     "builder": "NIXPACKS"
   },
   "deploy": {
-    "startCommand": "cd /app && ./start-with-migrations.sh",
+    "startCommand": "cd /app && ./start-no-db.sh",
     "healthcheckPath": "/",
     "healthcheckTimeout": 200,
     "restartPolicyType": "ON_FAILURE",

@@ -44,12 +44,21 @@ Route::get('/info', function () {
 
 // Basic root route for Railway healthcheck
 Route::get('/', function () {
-    return response()->json([
-        'message' => 'OmniChain API is running',
-        'version' => '1.0.0',
-        'timestamp' => now()->toISOString(),
-        'status' => 'healthy'
-    ]);
+    try {
+        return response()->json([
+            'message' => 'OmniChain API is running',
+            'version' => '1.0.0',
+            'timestamp' => date('Y-m-d H:i:s'),
+            'status' => 'healthy',
+            'php_version' => PHP_VERSION
+        ]);
+    } catch (Exception $e) {
+        return response()->json([
+            'error' => 'Application error',
+            'message' => $e->getMessage(),
+            'status' => 'error'
+        ]);
+    }
 });
 
 // Ultra-simple route for debugging
