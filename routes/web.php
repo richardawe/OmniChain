@@ -5,6 +5,9 @@ use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\DriverAppController;
 use App\Http\Controllers\Admin\DriverManagementController;
 
+// Include simple routes
+require_once __DIR__ . '/simple.php';
+
 // Simple health check route for Railway
 Route::get('/health', function () {
     return response()->json([
@@ -47,6 +50,11 @@ Route::get('/', function () {
         'timestamp' => now()->toISOString(),
         'status' => 'healthy'
     ]);
+});
+
+// Ultra-simple route for debugging
+Route::get('/ping', function () {
+    return 'pong';
 });
 
 Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
