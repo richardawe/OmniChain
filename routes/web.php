@@ -5,6 +5,16 @@ use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\DriverAppController;
 use App\Http\Controllers\Admin\DriverManagementController;
 
+// Health check route for Railway
+Route::get('/health', function () {
+    return response()->json([
+        'status' => 'healthy',
+        'timestamp' => now(),
+        'database' => DB::connection()->getPdo() ? 'connected' : 'disconnected',
+        'cache' => Cache::store()->getStore() ? 'connected' : 'disconnected'
+    ]);
+});
+
 Route::get('/', [DashboardController::class, 'index'])->name('dashboard');
 Route::get('/track-shipment', function () {
     return inertia('TrackShipment');
