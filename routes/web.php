@@ -44,7 +44,15 @@ Route::get('/info', function () {
 
 // Main application route - serve the Laravel application
 Route::get('/', function () {
-    return inertia('Dashboard');
+    try {
+        return inertia('Dashboard');
+    } catch (Exception $e) {
+        // Fallback to simple HTML if Inertia fails
+        return response()->view('simple-dashboard', [
+            'error' => $e->getMessage(),
+            'timestamp' => now()
+        ]);
+    }
 });
 
 // Healthcheck route for Railway

@@ -105,6 +105,17 @@ echo "🎨 Checking frontend assets..."
 if [ ! -d "/app/public/build" ]; then
     echo "⚠️  Frontend assets not found, building..."
     npm run build
+else
+    echo "✅ Frontend assets found"
+    ls -la /app/public/build/
+fi
+
+# Check if Vite manifest exists
+if [ -f "/app/public/build/manifest.json" ]; then
+    echo "✅ Vite manifest found"
+    cat /app/public/build/manifest.json
+else
+    echo "⚠️  Vite manifest not found"
 fi
 
 # Create SQLite database for basic functionality
