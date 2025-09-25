@@ -6,21 +6,24 @@ echo "🚀 Starting OmniChain Laravel application (simple mode)..."
 # Set default port if not provided
 export PORT=${PORT:-8000}
 
-# Create .env file if it doesn't exist
-if [ ! -f "/app/.env" ]; then
-    echo "📝 Creating .env file from example..."
-    cp /app/.env.example /app/.env
-fi
+# Create .env file with correct environment variables
+echo "📝 Setting up environment variables..."
+./set-env.sh
 
 # Set application environment
 export APP_ENV=production
 export APP_DEBUG=false
 export APP_URL=https://web-production-8c4a.up.railway.app
+export APP_NAME="OmniChain"
 
 # Set cache and session drivers to file (no Redis dependency)
 export CACHE_DRIVER=file
 export SESSION_DRIVER=file
 export QUEUE_CONNECTION=sync
+
+# Set API keys
+export OPENROUTE_API_KEY="eyJvcmciOiI1YjNjZTM1OTc4NTExMTAwMDFjZjYyNDgiLCJpZCI6ImM4ZjI4MjJmYWU2MzRiYTZhMjk5NWM0YWI2MGJkMGQ2IiwiaCI6Im11cm11cjY0In0="
+export OPENWEATHER_API_KEY="7ba818bbe65339f2fc489561e114d7be"
 
 # Generate application key if not set
 if [ -z "$APP_KEY" ] || [ "$APP_KEY" = "" ]; then

@@ -64,6 +64,21 @@ Route::get('/ping', function () {
     return 'pong';
 });
 
+// Debug route to check environment
+Route::get('/debug', function () {
+    return response()->json([
+        'app_name' => config('app.name'),
+        'app_url' => config('app.url'),
+        'app_env' => config('app.env'),
+        'app_debug' => config('app.debug'),
+        'vite_app_name' => env('VITE_APP_NAME'),
+        'has_openroute_key' => !empty(env('OPENROUTE_API_KEY')),
+        'has_openweather_key' => !empty(env('OPENWEATHER_API_KEY')),
+        'build_exists' => file_exists(public_path('build/manifest.json')),
+        'timestamp' => now()
+    ]);
+});
+
 Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 Route::get('/track-shipment', function () {
     return inertia('TrackShipment');
