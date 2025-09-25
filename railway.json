@@ -4,7 +4,7 @@
     "builder": "NIXPACKS"
   },
   "deploy": {
-    "startCommand": "cd /app && ./debug-start.sh",
+    "startCommand": "cd /app && ./fix-start.sh",
     "healthcheckPath": "/",
     "healthcheckTimeout": 200,
     "restartPolicyType": "ON_FAILURE",

@@ -1,10 +1,16 @@
 #!/bin/bash
 
-# Debug startup script for Railway
-echo "🚀 Starting OmniChain debug mode..."
+# Fixed startup script for Railway
+echo "🚀 Starting OmniChain (fixed version)..."
 
 # Set default port if not provided
 export PORT=${PORT:-8000}
+
+# Create .env file if it doesn't exist
+if [ ! -f "/app/.env" ]; then
+    echo "📝 Creating .env file..."
+    cp /app/.env.example /app/.env
+fi
 
 # Set database configuration for PostgreSQL
 export DB_CONNECTION=pgsql
@@ -19,24 +25,16 @@ export REDIS_HOST=hopper.proxy.rlwy.net
 export REDIS_PORT=11128
 export REDIS_PASSWORD=gOxwGrzjoBeqwHHGFWAFqgRPnZDutALU
 
-# Set cache and session drivers
-export CACHE_DRIVER=redis
-export SESSION_DRIVER=redis
-export QUEUE_CONNECTION=redis
+# Set cache and session drivers to database (fallback)
+export CACHE_DRIVER=database
+export SESSION_DRIVER=database
+export QUEUE_CONNECTION=database
 
 # Generate application key if not set
 if [ -z "$APP_KEY" ] || [ "$APP_KEY" = "" ]; then
     echo "🔑 Generating application key..."
     php artisan key:generate --force
 fi
-
-# Test database connection
-echo "🔍 Testing database connection..."
-php artisan tinker --execute="try { DB::connection()->getPdo(); echo 'Database connected: YES'; } catch (Exception \$e) { echo 'Database error: ' . \$e->getMessage(); }"
-
-# Test Redis connection (skip if not available)
-echo "🔍 Testing Redis connection..."
-php artisan tinker --execute="try { if (class_exists('Redis')) { Redis::ping(); echo 'Redis connected: YES'; } else { echo 'Redis: Class not found'; } } catch (Exception \$e) { echo 'Redis error: ' . \$e->getMessage(); }"
 
 # Start the application
 echo "🌐 Starting Laravel server on 0.0.0.0:$PORT"
