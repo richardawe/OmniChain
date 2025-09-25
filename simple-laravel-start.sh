@@ -17,6 +17,11 @@ export APP_ENV=production
 export APP_DEBUG=false
 export APP_URL=https://web-production-8c4a.up.railway.app
 
+# Set cache and session drivers to file (no Redis dependency)
+export CACHE_DRIVER=file
+export SESSION_DRIVER=file
+export QUEUE_CONNECTION=sync
+
 # Generate application key if not set
 if [ -z "$APP_KEY" ] || [ "$APP_KEY" = "" ]; then
     echo "🔑 Generating application key..."
