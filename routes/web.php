@@ -42,15 +42,20 @@ Route::get('/info', function () {
     ]);
 });
 
-// Main application route - serve the Laravel application
+// Super simple test route
 Route::get('/', function () {
+    return '<h1>OmniChain is working!</h1><p>Laravel is running correctly.</p>';
+});
+
+// Test Inertia route
+Route::get('/test-inertia', function () {
     try {
         return inertia('Dashboard');
     } catch (Exception $e) {
-        // Fallback to simple HTML if Inertia fails
-        return response()->view('simple-dashboard', [
-            'error' => $e->getMessage(),
-            'timestamp' => now()
+        return response()->json([
+            'error' => 'Inertia failed',
+            'message' => $e->getMessage(),
+            'trace' => $e->getTraceAsString()
         ]);
     }
 });

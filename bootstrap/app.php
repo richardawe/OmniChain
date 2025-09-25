@@ -30,6 +30,11 @@ return Application::configure(basePath: dirname(__DIR__))
         
         // Apply audit logging to all API routes
         $middleware->append(\App\Http\Middleware\AuditMiddleware::class);
+        
+        // Add Inertia.js middleware
+        $middleware->web(append: [
+            \Inertia\Middleware::class,
+        ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         //
