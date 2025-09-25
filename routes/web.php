@@ -75,6 +75,13 @@ Route::get('/debug', function () {
         'has_openroute_key' => !empty(env('OPENROUTE_API_KEY')),
         'has_openweather_key' => !empty(env('OPENWEATHER_API_KEY')),
         'build_exists' => file_exists(public_path('build/manifest.json')),
+        'database_url' => !empty(env('DATABASE_URL')),
+        'redis_url' => !empty(env('REDIS_URL')),
+        'railway_private_domain' => env('RAILWAY_PRIVATE_DOMAIN'),
+        'postgres_db' => env('POSTGRES_DB'),
+        'postgres_user' => env('POSTGRES_USER'),
+        'redishost' => env('REDISHOST'),
+        'redisport' => env('REDISPORT'),
         'timestamp' => now()
     ]);
 });

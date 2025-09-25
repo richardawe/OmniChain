@@ -16,10 +16,18 @@ export APP_DEBUG=false
 export APP_URL=https://web-production-8c4a.up.railway.app
 export APP_NAME="OmniChain"
 
-# Set cache and session drivers to file (no Redis dependency)
-export CACHE_DRIVER=file
-export SESSION_DRIVER=file
-export QUEUE_CONNECTION=sync
+# Set cache and session drivers (use Redis if available, fallback to file)
+if [ ! -z "$REDIS_URL" ]; then
+    export CACHE_DRIVER=redis
+    export SESSION_DRIVER=redis
+    export QUEUE_CONNECTION=redis
+    echo "✅ Using Redis for caching and sessions"
+else
+    export CACHE_DRIVER=file
+    export SESSION_DRIVER=file
+    export QUEUE_CONNECTION=sync
+    echo "⚠️  Using file-based caching (Redis not available)"
+fi
 
 # Set API keys
 export OPENROUTE_API_KEY="eyJvcmciOiI1YjNjZTM1OTc4NTExMTAwMDFjZjYyNDgiLCJpZCI6ImM4ZjI4MjJmYWU2MzRiYTZhMjk5NWM0YWI2MGJkMGQ2IiwiaCI6Im11cm11cjY0In0="
@@ -45,11 +53,16 @@ if [ ! -d "/app/public/build" ]; then
     npm run build
 fi
 
-# Skip ALL database operations
-echo "⚠️  Skipping ALL database operations..."
-echo "🔍 No database connection test"
-echo "📊 No database migrations"
-echo "⚡ No config caching"
+# Test database connection if available
+if [ ! -z "$DATABASE_URL" ]; then
+    echo "🔍 Testing database connection with Railway variables..."
+    php artisan tinker --execute="try { DB::connection()->getPdo(); echo 'Database: Connected via Railway'; } catch (Exception \$e) { echo 'Database Error: ' . \$e->getMessage(); }" || echo "⚠️  Database connection failed, continuing without database"
+    
+    echo "📊 Running database migrations..."
+    php artisan migrate --force || echo "⚠️  Migrations failed, continuing without database"
+else
+    echo "⚠️  No DATABASE_URL found, skipping database operations..."
+fi
 
 # Start the application
 echo "🌐 Starting Laravel server on 0.0.0.0:$PORT"
