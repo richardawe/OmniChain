@@ -26,4 +26,20 @@ export default defineConfig({
             '@': '/resources/js',
         },
     },
+    build: {
+        outDir: 'public/build',
+        emptyOutDir: true,
+        manifest: true,
+        rollupOptions: {
+            input: {
+                app: 'resources/js/app.js',
+                driver: 'resources/js/driver-app.js'
+            }
+        }
+    },
+    server: {
+        hmr: {
+            host: 'localhost',
+        },
+    },
 });

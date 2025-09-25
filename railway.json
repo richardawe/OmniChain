@@ -5,7 +5,7 @@
   },
   "deploy": {
     "startCommand": "cd /app && ./simple-laravel-start.sh",
-    "healthcheckPath": "/",
+    "healthcheckPath": "/health",
     "healthcheckTimeout": 200,
     "restartPolicyType": "ON_FAILURE",
     "restartPolicyMaxRetries": 5

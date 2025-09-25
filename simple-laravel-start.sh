@@ -35,6 +35,13 @@ php artisan route:clear
 php artisan view:clear
 php artisan cache:clear
 
+# Ensure frontend assets are built
+echo "🎨 Checking frontend assets..."
+if [ ! -d "/app/public/build" ]; then
+    echo "⚠️  Frontend assets not found, building..."
+    npm run build
+fi
+
 # Skip ALL database operations
 echo "⚠️  Skipping ALL database operations..."
 echo "🔍 No database connection test"

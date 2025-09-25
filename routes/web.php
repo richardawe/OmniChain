@@ -47,6 +47,18 @@ Route::get('/', function () {
     return inertia('Dashboard');
 });
 
+// Healthcheck route for Railway
+Route::get('/health', function () {
+    return response()->json([
+        'message' => 'OmniChain API is running',
+        'version' => '1.0.0',
+        'timestamp' => date('Y-m-d H:i:s'),
+        'status' => 'healthy',
+        'php_version' => PHP_VERSION,
+        'laravel_version' => app()->version()
+    ]);
+});
+
 // Ultra-simple route for debugging
 Route::get('/ping', function () {
     return 'pong';
