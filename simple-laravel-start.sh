@@ -6,9 +6,66 @@ echo "🚀 Starting OmniChain Laravel application (simple mode)..."
 # Set default port if not provided
 export PORT=${PORT:-8000}
 
-# Create .env file with correct environment variables
-echo "📝 Setting up environment variables..."
-./set-env.sh
+# Set Railway environment variables directly
+echo "📝 Setting up Railway environment variables..."
+
+# Database configuration from Railway
+if [ ! -z "$RAILWAY_PRIVATE_DOMAIN" ]; then
+    export DB_CONNECTION=pgsql
+    export DB_HOST=$RAILWAY_PRIVATE_DOMAIN
+    export DB_PORT=5432
+    export DB_DATABASE=$POSTGRES_DB
+    export DB_USERNAME=$POSTGRES_USER
+    export DB_PASSWORD=$POSTGRES_PASSWORD
+    echo "✅ Database configured with Railway variables"
+else
+    echo "⚠️  Railway database variables not found"
+fi
+
+# Redis configuration from Railway
+if [ ! -z "$RAILWAY_PRIVATE_DOMAIN" ] && [ ! -z "$REDIS_PASSWORD" ]; then
+    export REDIS_HOST=$RAILWAY_PRIVATE_DOMAIN
+    export REDIS_PORT=6379
+    export REDIS_PASSWORD=$REDIS_PASSWORD
+    echo "✅ Redis configured with Railway variables"
+else
+    echo "⚠️  Railway Redis variables not found"
+fi
+
+# Create basic .env file
+echo "📝 Creating basic .env file..."
+cat > /app/.env << EOF
+APP_NAME="OmniChain"
+APP_ENV=production
+APP_KEY=
+APP_DEBUG=false
+APP_URL=https://web-production-8c4a.up.railway.app
+
+LOG_CHANNEL=stack
+LOG_LEVEL=debug
+
+BROADCAST_DRIVER=log
+CACHE_DRIVER=file
+FILESYSTEM_DISK=local
+QUEUE_CONNECTION=sync
+SESSION_DRIVER=file
+SESSION_LIFETIME=120
+
+MAIL_MAILER=smtp
+MAIL_HOST=mailpit
+MAIL_PORT=1025
+MAIL_USERNAME=null
+MAIL_PASSWORD=null
+MAIL_ENCRYPTION=null
+MAIL_FROM_ADDRESS="hello@example.com"
+MAIL_FROM_NAME="OmniChain"
+
+VITE_APP_NAME="OmniChain"
+
+# External API Keys
+OPENROUTE_API_KEY="eyJvcmciOiI1YjNjZTM1OTc4NTExMTAwMDFjZjYyNDgiLCJpZCI6ImM4ZjI4MjJmYWU2MzRiYTZhMjk5NWM0YWI2MGJkMGQ2IiwiaCI6Im11cm11cjY0In0="
+OPENWEATHER_API_KEY="7ba818bbe65339f2fc489561e114d7be"
+EOF
 
 # Set application environment
 export APP_ENV=production
