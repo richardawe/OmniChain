@@ -13,4 +13,4 @@ cmds = [
 ]
 
 [start]
-cmd = "cd /app && ./start-no-db-fixed.sh"
+cmd = "cd /app && ./simple-laravel-start.sh"

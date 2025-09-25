@@ -4,7 +4,7 @@
     "builder": "NIXPACKS"
   },
   "deploy": {
-    "startCommand": "cd /app && ./start-no-db-fixed.sh",
+    "startCommand": "cd /app && ./simple-laravel-start.sh",
     "healthcheckPath": "/",
     "healthcheckTimeout": 200,
     "restartPolicyType": "ON_FAILURE",
