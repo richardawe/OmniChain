@@ -64,4 +64,6 @@ php artisan view:cache
 
 # Start the application
 echo "🌐 Starting Laravel server on 0.0.0.0:$PORT"
+echo "📱 OmniChain Supply Chain Platform is ready!"
+echo "🔗 Access your application at: https://web-production-8c4a.up.railway.app"
 php artisan serve --host=0.0.0.0 --port=$PORT --no-reload

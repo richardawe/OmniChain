@@ -4,7 +4,11 @@ nixPkgs = ["nodejs", "php", "php82Packages.composer"]
 [phases.install]
 cmds = [
     "composer install --no-dev --optimize-autoloader",
-    "npm ci",
+    "npm ci"
+]
+
+[phases.build]
+cmds = [
     "npm run build"
 ]
 

@@ -42,24 +42,9 @@ Route::get('/info', function () {
     ]);
 });
 
-// Basic root route for Railway healthcheck
+// Main application route - serve the Laravel application
 Route::get('/', function () {
-    try {
-        return response()->json([
-            'message' => 'OmniChain API is running',
-            'version' => '1.0.0',
-            'timestamp' => date('Y-m-d H:i:s'),
-            'status' => 'healthy',
-            'php_version' => PHP_VERSION,
-            'laravel_version' => app()->version()
-        ]);
-    } catch (Exception $e) {
-        return response()->json([
-            'error' => 'Laravel error',
-            'message' => $e->getMessage(),
-            'status' => 'error'
-        ]);
-    }
+    return inertia('Dashboard');
 });
 
 // Ultra-simple route for debugging
