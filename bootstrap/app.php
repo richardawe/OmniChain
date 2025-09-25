@@ -25,11 +25,11 @@ return Application::configure(basePath: dirname(__DIR__))
             'audit' => \App\Http\Middleware\AuditMiddleware::class,
         ]);
         
-        // Apply input sanitization to all API routes
-        $middleware->append(\App\Http\Middleware\InputSanitization::class);
-        
-        // Apply audit logging to all API routes
-        $middleware->append(\App\Http\Middleware\AuditMiddleware::class);
+        // Apply input sanitization to API routes only
+        $middleware->api(append: [
+            \App\Http\Middleware\InputSanitization::class,
+            \App\Http\Middleware\AuditMiddleware::class,
+        ]);
         
         // Add Inertia.js middleware
         $middleware->web(append: [

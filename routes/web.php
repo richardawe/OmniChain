@@ -42,9 +42,64 @@ Route::get('/info', function () {
     ]);
 });
 
-// Super simple test route
+// Ultra simple test route
 Route::get('/', function () {
-    return '<h1>OmniChain is working!</h1><p>Laravel is running correctly.</p>';
+    return inertia('Dashboard');
+});
+
+Route::get('/weather-logistics', function () {
+    return inertia('WeatherLogistics');
+});
+
+Route::get('/weather-test', function () {
+    return inertia('WeatherTest');
+});
+
+Route::get('/debug-inertia', function () {
+    return inertia('WeatherTest', [
+        'debug' => 'This is a test message from Laravel',
+        'timestamp' => now()->toISOString()
+    ]);
+});
+
+Route::get('/simple-test', function () {
+    return inertia('SimpleTest', [
+        'debug' => 'This is a test message from Laravel',
+        'timestamp' => now()->toISOString()
+    ]);
+});
+
+Route::get('/inertia-debug', function () {
+    return response()->json([
+        'message' => 'This is a JSON response to test if the route is working',
+        'timestamp' => now()->toISOString()
+    ]);
+});
+
+Route::get('/basic-test', function () {
+    return inertia('BasicTest');
+});
+
+Route::get('/weather-simple', function () {
+    return '<h1>Simple Test - This should work!</h1><p>If you see this, the route is working.</p>';
+});
+
+Route::get('/driver-management', function () {
+    return inertia('Admin/DriverManagement');
+});
+
+// Driver login route (alternative path)
+Route::get('/login/driver', [DriverAppController::class, 'login'])->name('driver.login.alt');
+
+// Even simpler test
+Route::get('/test', function () {
+    return 'Test route works!';
+});
+
+// Raw PHP test
+Route::get('/raw', function () {
+    echo 'Raw PHP output';
+    return '';
 });
 
 // Test Inertia route
@@ -75,6 +130,17 @@ Route::get('/health', function () {
 // Ultra-simple route for debugging
 Route::get('/ping', function () {
     return 'pong';
+});
+
+// Debug route for CORS and API testing
+Route::get('/debug-cors', function () {
+    return response()->json([
+        'cors_enabled' => true,
+        'openweather_key' => env('OPENWEATHER_API_KEY', '7ba818bbe65339f2fc489561e114d7be'),
+        'openroute_key' => env('OPENROUTE_API_KEY', 'eyJvcmciOiI1YjNjZTM1OTc4NTExMTAwMDFjZjYyNDgiLCJpZCI6ImM4ZjI4MjJmYWU2MzRiYTZhMjk5NWM0YWI2MGJkMGQ2IiwiaCI6Im11cm11cjY0In0='),
+        'timestamp' => now()->toISOString(),
+        'test_weather' => json_decode(file_get_contents('https://api.openweathermap.org/data/2.5/weather?q=Chicago&appid=7ba818bbe65339f2fc489561e114d7be&units=metric'))
+    ])->header('Access-Control-Allow-Origin', '*');
 });
 
 // Debug route to check environment
