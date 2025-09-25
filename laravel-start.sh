@@ -19,6 +19,8 @@ export DB_PORT=54435
 export DB_DATABASE=railway
 export DB_USERNAME=postgres
 export DB_PASSWORD=nqHVYqKxKaBcZPPZzErDHTPZBFRUsyWR
+export DB_CHARSET=utf8
+export DB_COLLATION=utf8_unicode_ci
 
 # Set Redis configuration
 export REDIS_HOST=hopper.proxy.rlwy.net
@@ -50,15 +52,15 @@ php artisan cache:clear
 
 # Test database connection
 echo "🔍 Testing database connection..."
-php artisan tinker --execute="try { DB::connection()->getPdo(); echo 'Database: Connected'; } catch (Exception \$e) { echo 'Database Error: ' . \$e->getMessage(); }"
+php test-db-connection.php
 
 # Run migrations
 echo "📊 Running database migrations..."
 php artisan migrate --force
 
-# Cache configuration for production
-echo "⚡ Caching configuration..."
-php artisan config:cache
+# Cache configuration for production (skip problematic caching)
+echo "⚡ Skipping config cache due to serialization issues..."
+# php artisan config:cache
 php artisan route:cache
 php artisan view:cache
 
