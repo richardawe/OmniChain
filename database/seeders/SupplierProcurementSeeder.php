@@ -18,39 +18,43 @@ class SupplierProcurementSeeder extends Seeder
     public function run(): void
     {
         // Create supplier companies
-        $steelWorks = Company::create([
-            'name' => 'SteelWorks Manufacturing',
-            'code' => 'SWM002',
-            'legal_name' => 'SteelWorks Manufacturing LLC',
-            'type' => 'shipper',
-            'business_type' => 'Manufacturer',
-            'email' => 'sales@steelworks.com',
-            'phone' => '+1-555-1001',
-            'address' => '1000 Steel Mill Road',
-            'city' => 'Pittsburgh',
-            'state' => 'PA',
-            'country' => 'USA',
-            'status' => 'active',
-            'certifications' => ['ISO-9001', 'ASME', 'AWS'],
-            'metadata' => ['founded_year' => 1975, 'employee_count' => 300]
-        ]);
+        $steelWorks = Company::firstOrCreate(
+            ['code' => 'SWM002'],
+            [
+                'name' => 'SteelWorks Manufacturing',
+                'legal_name' => 'SteelWorks Manufacturing LLC',
+                'type' => 'shipper',
+                'business_type' => 'Manufacturer',
+                'email' => 'sales@steelworks.com',
+                'phone' => '+1-555-1001',
+                'address' => '1000 Steel Mill Road',
+                'city' => 'Pittsburgh',
+                'state' => 'PA',
+                'country' => 'USA',
+                'status' => 'active',
+                'certifications' => ['ISO-9001', 'ASME', 'AWS'],
+                'metadata' => ['founded_year' => 1975, 'employee_count' => 300]
+            ]
+        );
 
-        $electronicsSupply = Company::create([
-            'name' => 'Electronics Supply Co',
-            'code' => 'ESC002',
-            'legal_name' => 'Electronics Supply Company Inc',
-            'type' => 'shipper',
-            'business_type' => 'Distributor',
-            'email' => 'procurement@elecsupply.com',
-            'phone' => '+1-555-2001',
-            'address' => '2500 Tech Boulevard',
-            'city' => 'Austin',
-            'state' => 'TX',
-            'country' => 'USA',
-            'status' => 'active',
-            'certifications' => ['ISO-9001', 'RoHS', 'REACH'],
-            'metadata' => ['founded_year' => 1990, 'employee_count' => 150]
-        ]);
+        $electronicsSupply = Company::firstOrCreate(
+            ['code' => 'ESC002'],
+            [
+                'name' => 'Electronics Supply Co',
+                'legal_name' => 'Electronics Supply Company Inc',
+                'type' => 'shipper',
+                'business_type' => 'Distributor',
+                'email' => 'procurement@elecsupply.com',
+                'phone' => '+1-555-2001',
+                'address' => '2500 Tech Boulevard',
+                'city' => 'Austin',
+                'state' => 'TX',
+                'country' => 'USA',
+                'status' => 'active',
+                'certifications' => ['ISO-9001', 'RoHS', 'REACH'],
+                'metadata' => ['founded_year' => 1990, 'employee_count' => 150]
+            ]
+        );
 
         // Get buyer company and user
         $buyerCompany = Company::where('code', 'GMC002')->first();
@@ -63,9 +67,9 @@ class SupplierProcurementSeeder extends Seeder
         }
 
         // Create supplier onboarding
-        SupplierOnboarding::create([
-            'company_id' => $steelWorks->id,
-            'buyer_company_id' => $buyerCompany->id,
+        SupplierOnboarding::firstOrCreate(
+            ['company_id' => $steelWorks->id, 'buyer_company_id' => $buyerCompany->id],
+            [
             'onboarding_date' => now()->subMonths(6),
             'status' => 'approved',
             'kyc_documents' => ['business_license.pdf', 'tax_certificate.pdf'],

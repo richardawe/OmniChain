@@ -1,154 +1,111 @@
-# OmniChain - Unified Supply Chain Execution Platform
+# OmniChain Backend
 
-A comprehensive supply chain management platform with real-time tracking, driver management, weather integration, and route optimization.
+This is the backend component of the OmniChain supply chain execution platform.
 
-## 🚀 Features
+## 🚀 Quick Start Guide
 
-- **Real-time Shipment Tracking** with interactive maps
-- **Driver Mobile App (PWA)** with location tracking and offline capabilities
-- **Weather & Route Intelligence** using OpenWeatherMap and OpenRouteService APIs
-- **Freight Order Management** with carrier assignment
-- **Company & Location Management** with geospatial data
-- **Animated Route Visualization** for active deliveries
-- **Responsive Dashboard** with real-time updates
+### Prerequisites
 
-## 📋 Prerequisites
+- PHP 8.2+
+- Node.js 18+ (for frontend assets)
+- Composer
+- npm or yarn
 
-- **PHP 8.2+**
-- **Node.js 20.19+ or 22.12+**
-- **Composer**
-- **PostgreSQL with PostGIS extension**
-- **Redis** (optional, for caching)
+### Setup Instructions
 
-## 🛠️ Installation
+1. **Install dependencies**
+   ```bash
+   # Install PHP dependencies
+   composer install
+   
+   # Install JS dependencies
+   npm install
+   ```
 
-### 1. Clone the Repository
+2. **Configure environment**
+   ```bash
+   # Create a .env file manually with the following content:
+   echo "APP_NAME=OmniChain
+   APP_ENV=local
+   APP_KEY=
+   APP_DEBUG=true
+   APP_URL=http://localhost:8000
+   
+   LOG_CHANNEL=stack
+   LOG_DEPRECATIONS_CHANNEL=null
+   LOG_LEVEL=debug
+   
+   DB_CONNECTION=sqlite
+   DB_DATABASE=$(pwd)/database/database.sqlite
+   
+   BROADCAST_DRIVER=log
+   CACHE_DRIVER=file
+   FILESYSTEM_DISK=local
+   QUEUE_CONNECTION=sync
+   SESSION_DRIVER=file
+   SESSION_LIFETIME=120
+   
+   OPENWEATHER_API_KEY=7ba818bbe65339f2fc489561e114d7be
+   OPENROUTE_API_KEY=eyJvcmciOiI1YjNjZTM1OTc4NTExMTAwMDFjZjYyNDgiLCJpZCI6ImM4ZjI4MjJmYWU2MzRiYTZhMjk5NWM0YWI2MGJkMGQ2IiwiaCI6Im11cm11cjY0In0=" > .env
+   
+   # Generate application key
+   php artisan key:generate
+   ```
 
-```bash
-git clone <repository-url>
-cd omnichain-backend
-```
+3. **Database setup**
+   ```bash
+   # Run migrations
+   php artisan migrate
+   
+   # Seed the database with sample data
+   php artisan db:seed
+   ```
 
-### 2. Install PHP Dependencies
-
-```bash
-composer install
-```
-
-### 3. Install Node.js Dependencies
-
-```bash
-npm install
-```
-
-### 4. Environment Configuration
-
-Copy the environment file and configure your settings:
-
-```bash
-cp .env.example .env
-```
-
-Edit `.env` file with your configuration:
-
-```env
-APP_NAME=OmniChain
-APP_ENV=local
-APP_KEY=
-APP_DEBUG=true
-APP_URL=http://localhost:8000
-
-DB_CONNECTION=pgsql
-DB_HOST=127.0.0.1
-DB_PORT=5432
-DB_DATABASE=omnichain
-DB_USERNAME=your_username
-DB_PASSWORD=your_password
-
-# External APIs (Required for Weather & Route Intelligence)
-OPENWEATHER_API_KEY=your_openweather_api_key
-OPENROUTE_API_KEY=your_openroute_api_key
-
-# Redis (Optional)
-REDIS_HOST=127.0.0.1
-REDIS_PASSWORD=null
-REDIS_PORT=6379
-```
-
-### 5. Generate Application Key
-
-```bash
-php artisan key:generate
-```
-
-### 6. Database Setup
-
-Create PostgreSQL database with PostGIS extension:
-
-```sql
-CREATE DATABASE omnichain;
-\c omnichain;
-CREATE EXTENSION postgis;
-```
-
-Run migrations:
-
-```bash
-php artisan migrate
-```
-
-### 7. Seed Database
-
-```bash
-php artisan db:seed
-```
-
-This will create:
-- Sample companies and locations
-- Test driver accounts
-- Sample freight orders
-- Weather and logistics test data
+4. **Build frontend assets**
+   ```bash
+   # Development mode
+   npm run dev
+   
+   # Production build
+   npm run build
+   ```
 
 ## 🚀 Running the Application
 
-### 1. Start Laravel Server
+### Option 1: Standard Laravel Server (May Have Display Issues)
 
 ```bash
+# Start the Laravel server
 php artisan serve
-```
 
-The application will be available at `http://localhost:8000`
-
-### 2. Build Frontend Assets
-
-For development:
-
-```bash
+# In a separate terminal, start the Vite dev server
 npm run dev
 ```
 
-For production:
+Access the application at: http://localhost:8000
+
+### Option 2: Fixed Server (Recommended)
+
+Due to an output buffering issue that causes blank screens in some environments, we recommend using this method:
 
 ```bash
-npm run build
+# Start the PHP server with our fix script
+php -S localhost:8004 public/soh_fix.php
+
+# In a separate terminal, start the Vite dev server
+npm run dev
 ```
 
-### 3. Start Queue Worker (Optional)
-
-For background job processing:
-
-```bash
-php artisan queue:work
-```
+Access the application at: http://localhost:8004
 
 ## 🔑 Default Login Credentials
 
 ### Main Dashboard
-- **URL**: `http://localhost:8000`
+- **URL**: `http://localhost:8004`
 - **Admin Access**: Available without authentication for demo purposes
 
 ### Driver App
-- **URL**: `http://localhost:8000/driver/login`
+- **URL**: `http://localhost:8004/driver/login`
 - **Email**: `driver@omnichain.com`
 - **Password**: `password`
 
@@ -159,7 +116,7 @@ Additional test drivers:
 ## 📱 Driver App Features
 
 ### PWA Installation
-1. Open `http://localhost:8000/driver/login` in mobile browser
+1. Open `http://localhost:8004/driver/login` in mobile browser
 2. Tap "Add to Home Screen" when prompted
 3. App installs as native-like PWA
 
@@ -181,112 +138,21 @@ Additional test drivers:
 - **Status Tracking**: Real-time status updates
 - **Location Management**: Geospatial company and location data
 
-## 🌐 API Endpoints
-
-### Authentication
-```
-POST /api/v1/auth/login
-POST /api/v1/auth/logout
-GET  /api/v1/auth/me
-```
-
-### Freight Orders
-```
-GET    /api/v1/freight-orders
-POST   /api/v1/freight-orders
-GET    /api/v1/freight-orders/{id}
-PUT    /api/v1/freight-orders/{id}
-DELETE /api/v1/freight-orders/{id}
-GET    /api/v1/freight-orders/track/{orderNumber}
-```
-
-### Driver API
-```
-GET  /api/v1/driver/profile
-PUT  /api/v1/driver/profile
-GET  /api/v1/driver/tasks
-POST /api/v1/driver/orders/{id}/claim
-PUT  /api/v1/driver/tasks/{id}/status
-POST /api/v1/driver/location
-GET  /api/v1/driver-locations
-```
-
-### Logistics & Weather
-```
-GET  /api/v1/logistics/freight-orders/{id}
-GET  /api/v1/logistics/weather/{id}
-POST /api/v1/logistics/optimize-route
-POST /api/v1/logistics/multiple-weather
-POST /api/v1/logistics/weather-aware-route
-```
-
-## 🧪 Testing the Application
-
-### 1. Create a Freight Order
-1. Go to main dashboard → "Orders" tab
-2. Click "Create Order"
-3. Fill in order details
-4. Save order (status: "booked")
-
-### 2. Driver Claims Order
-1. Open driver app: `http://localhost:8000/driver/login`
-2. Login with `driver@omnichain.com` / `password`
-3. Click "Claim Order" on available order
-4. Order moves to "Pending" status
-
-### 3. Start Delivery Animation
-1. In driver app, click "Mark Picked Up"
-2. Return to main dashboard
-3. Enable "Show Drivers" on map
-4. Watch animated route visualization
-
-### 4. View Driver Details
-1. Go to "Orders" tab in main dashboard
-2. See driver information in "Driver" column
-3. Real-time updates every 30 seconds
-
-## 🔧 Configuration
-
-### External APIs Setup
-
-#### OpenWeatherMap API
-1. Sign up at [OpenWeatherMap](https://openweathermap.org/api)
-2. Get free API key
-3. Add to `.env`: `OPENWEATHER_API_KEY=your_key`
-
-#### OpenRouteService API
-1. Sign up at [OpenRouteService](https://openrouteservice.org/)
-2. Get free API key
-3. Add to `.env`: `OPENROUTE_API_KEY=your_key`
-
-### Database Configuration
-
-Ensure PostgreSQL has PostGIS extension:
-
-```sql
--- Check if PostGIS is installed
-SELECT PostGIS_version();
-
--- Install PostGIS if needed
-CREATE EXTENSION postgis;
-```
-
 ## 🐛 Troubleshooting
 
 ### Common Issues
 
-#### 1. Driver Column Shows "Unassigned"
-- **Solution**: Refresh the page or wait for auto-refresh (30 seconds)
-- **Cause**: Frontend loading stale data from server-side rendering
+#### 1. Blank Screen Issue
+- **Solution**: Use the fixed server option with `php -S localhost:8004 public/soh_fix.php`
+- **Cause**: Output buffering issue with PHP/Laravel
 
-#### 2. Location Permission Denied
-- **Solution**: Enable location access in browser settings
-- **Alternative**: Driver app continues to work without location tracking
+#### 2. "Failed to delete and flush buffer" Error
+- **Solution**: Restart the PHP server
+- **Cause**: Conflict in output buffering between Laravel and our fix script
 
-#### 3. Animated Route Not Showing
-- **Check**: Browser console for error messages
-- **Verify**: "Show Drivers" checkbox is enabled
-- **Ensure**: Driver has active delivery task
+#### 3. Database Connection Issues
+- **Solution**: Check that your .env file has the correct DB_DATABASE path
+- **Alternative**: Run `php artisan migrate:fresh --seed` to reset the database
 
 #### 4. API Keys Not Working
 - **Verify**: Keys are correctly added to `.env` file
@@ -306,110 +172,36 @@ Check logs:
 tail -f storage/logs/laravel.log
 ```
 
-## 📊 Performance
-
-### Optimization Tips
+## 📊 Performance Optimization
 
 1. **Enable Redis**: For better caching performance
 2. **Queue Jobs**: Use background processing for heavy tasks
 3. **Asset Optimization**: Run `npm run build` for production
 4. **Database Indexing**: Ensure proper indexes on location and order tables
 
-### Monitoring
-
-- **Real-time Updates**: Every 30 seconds
-- **Location Tracking**: GPS accuracy dependent
-- **API Rate Limits**: Respect external API limits
-
-## 🤝 Contributing
-
-1. Fork the repository
-2. Create feature branch: `git checkout -b feature-name`
-3. Commit changes: `git commit -am 'Add feature'`
-4. Push branch: `git push origin feature-name`
-5. Submit pull request
-
-## 📄 License
-
-This project is licensed under the MIT License.
-
 ## 🚀 Deployment
 
-### Quick Deploy to Railway
+### Railway Deployment
 
-1. **Prepare for deployment:**
-   ```bash
-   ./deploy.sh
+To deploy on Railway:
+
+1. Connect your GitHub repository to Railway
+2. Set the following environment variables:
+   - `APP_ENV=production`
+   - `APP_DEBUG=false`
+   - `APP_URL=your-railway-url`
+   - `DB_CONNECTION=sqlite` (or your preferred database)
+   - Other environment variables as needed
+3. Add the following build commands:
    ```
-
-2. **Push to GitHub:**
-   ```bash
-   git add .
-   git commit -m "Deploy to Railway"
-   git push origin main
+   composer install --no-dev --optimize-autoloader && 
+   php artisan config:cache && 
+   php artisan route:cache && 
+   php artisan view:cache && 
+   npm ci && 
+   npm run build
    ```
-
-3. **Deploy to Railway:**
-   - Go to [Railway](https://railway.app)
-   - Connect your GitHub repository
-   - Add PostgreSQL and Redis services
-   - Set environment variables (see `.env.example`)
-   - Deploy!
-
-### Environment Variables for Production
-
-Set these in Railway dashboard:
-
-```env
-APP_NAME=OmniChain
-APP_ENV=production
-APP_DEBUG=false
-APP_URL=https://your-app.railway.app
-
-# Database (auto-configured by Railway)
-DB_CONNECTION=pgsql
-DB_HOST=${{Postgres.PGHOST}}
-DB_PORT=${{Postgres.PGPORT}}
-DB_DATABASE=${{Postgres.PGDATABASE}}
-DB_USERNAME=${{Postgres.PGUSER}}
-DB_PASSWORD=${{Postgres.PGPASSWORD}}
-
-# Redis (auto-configured by Railway)
-REDIS_HOST=${{Redis.REDIS_HOST}}
-REDIS_PORT=${{Redis.REDIS_PORT}}
-REDIS_PASSWORD=${{Redis.REDIS_PASSWORD}}
-
-# External APIs
-OPENWEATHER_API_KEY=your_openweather_api_key
-OPENROUTE_API_KEY=your_openroute_api_key
-
-# Production settings
-CACHE_DRIVER=redis
-SESSION_DRIVER=redis
-QUEUE_CONNECTION=redis
-```
-
-### Post-Deployment Commands
-
-```bash
-# Run migrations
-railway run php artisan migrate
-
-# Seed database (optional)
-railway run php artisan db:seed
-
-# Cache configuration
-railway run php artisan config:cache
-```
-
-## 🆘 Support
-
-For issues and questions:
-1. Check this README
-2. Review browser console for errors
-3. Check Laravel logs in `storage/logs/`
-4. Verify API keys and database connection
-5. See `DEPLOYMENT_GUIDE.md` for detailed deployment instructions
+4. Set the start command to: `php -S 0.0.0.0:$PORT public/soh_fix.php`
 
 ---
 

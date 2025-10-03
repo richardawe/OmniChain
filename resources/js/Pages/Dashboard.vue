@@ -516,37 +516,7 @@
                     </div>
                 </div>
 
-                <!-- Modern Stats Section -->
-                <div class="mb-12">
-                    <div class="text-center mb-8">
-                        <h2 class="text-2xl font-bold bg-gradient-to-r from-gray-900 via-blue-800 to-indigo-800 bg-clip-text text-transparent mb-2">
-                            Real-time Performance Metrics
-                        </h2>
-                        <p class="text-gray-600">Live supply chain insights and key performance indicators</p>
-                    </div>
-                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-                        <!-- Active Shipments -->
-                        <div class="bg-white/80 backdrop-blur-sm p-6 rounded-2xl shadow-lg border border-white/20 hover:shadow-xl transition-all duration-300">
-                            <div class="flex items-center justify-between">
-                                <div>
-                                    <p class="text-sm font-medium text-gray-600">Active Shipments</p>
-                                    <p class="text-3xl font-bold text-blue-600">23</p>
-                                    <p class="text-xs text-green-600 flex items-center mt-1">
-                                        <svg class="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"/>
-                                        </svg>
-                                        +12% this week
-                                    </p>
-                                </div>
-                                <div class="p-3 bg-gradient-to-br from-blue-500 to-blue-600 rounded-2xl">
-                                    <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"/>
-                                    </svg>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+                <!-- Modern Stats Section Removed -->
 
                 <!-- Dashboard Overview Content -->
                 <div class="text-center py-16">

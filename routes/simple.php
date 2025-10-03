@@ -8,3 +8,4 @@ Route::get('/simple', function () {
 Route::get('/basic', function () {
     return response()->json(['status' => 'ok', 'time' => time()]);
 });
+

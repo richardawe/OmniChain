@@ -113,7 +113,10 @@ class MasterDataSeeder extends Seeder
         ];
 
         foreach ($companies as $companyData) {
-            Company::create($companyData);
+            Company::firstOrCreate(
+                ['code' => $companyData['code']],
+                $companyData
+            );
         }
     }
 
@@ -174,7 +177,10 @@ class MasterDataSeeder extends Seeder
         ];
 
         foreach ($locations as $locationData) {
-            Location::create($locationData);
+            Location::firstOrCreate(
+                ['code' => $locationData['code']],
+                $locationData
+            );
         }
     }
 
@@ -234,7 +240,10 @@ class MasterDataSeeder extends Seeder
         ];
 
         foreach ($products as $productData) {
-            Product::create($productData);
+            Product::firstOrCreate(
+                ['sku' => $productData['sku']],
+                $productData
+            );
         }
     }
 
@@ -281,7 +290,10 @@ class MasterDataSeeder extends Seeder
         ];
 
         foreach ($employees as $employeeData) {
-            Employee::create($employeeData);
+            Employee::firstOrCreate(
+                ['employee_id' => $employeeData['employee_id']],
+                $employeeData
+            );
         }
     }
 }
