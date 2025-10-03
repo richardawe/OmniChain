@@ -33,6 +33,7 @@ class PurchaseOrderLineItem extends Model
         'line_notes',
         'quality_requirements',
         'metadata',
+        'product_id', // Added product_id field
     ];
 
     protected $casts = [
@@ -51,6 +52,12 @@ class PurchaseOrderLineItem extends Model
     public function deliveryLocation(): BelongsTo
     {
         return $this->belongsTo(Location::class, 'delivery_location_id');
+    }
+
+    // Add the product relationship
+    public function product(): BelongsTo
+    {
+        return $this->belongsTo(Product::class);
     }
 
     // Scopes
