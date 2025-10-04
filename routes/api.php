@@ -50,6 +50,17 @@ Route::prefix('v1')->group(function () {
     Route::post('/register', [AuthController::class, 'register']);
     Route::middleware('auth:sanctum')->post('/logout', [AuthController::class, 'logout']);
 
+    // Master Data Routes
+    Route::prefix('master-data')->group(function () {
+        Route::get('/summary', [MasterDataController::class, 'getSummary']);
+        Route::get('/companies', [MasterDataController::class, 'getCompanies']);
+        Route::get('/locations', [MasterDataController::class, 'getLocations']);
+        Route::get('/products', [MasterDataController::class, 'getProducts']);
+        Route::get('/employees', [MasterDataController::class, 'getEmployees']);
+        Route::post('/companies', [MasterDataController::class, 'createCompany']);
+        Route::post('/products', [MasterDataController::class, 'createProduct']);
+    });
+
     // Freight Order Routes
     Route::apiResource('freight-orders', FreightOrderController::class);
     Route::get('/freight-orders/track/{orderNumber}', [FreightOrderController::class, 'trackShipment']);
@@ -109,14 +120,16 @@ Route::prefix('v1')->group(function () {
         Route::get('/driver/profile', [DriverApiController::class, 'getProfile']);
         Route::post('/driver/profile', [DriverApiController::class, 'updateProfile']);
     });
+    
+    // Driver Locations (public)
+    Route::get('/driver-locations', [DriverApiController::class, 'getDriverLocations']);
 
-    // Master Data Routes
-    Route::apiResource('products', MasterDataController::class);
-    Route::get('/products/search/{term}', [MasterDataController::class, 'searchProducts']);
-    Route::get('/products/category/{category}', [MasterDataController::class, 'getProductsByCategory']);
-    Route::apiResource('employees', MasterDataController::class);
-    Route::get('/employees/search/{term}', [MasterDataController::class, 'searchEmployees']);
-    Route::get('/employees/department/{department}', [MasterDataController::class, 'getEmployeesByDepartment']);
-
-    // Other routes commented out for initial deployment testing
+    // Transportation Routes
+    Route::prefix('transportation')->group(function () {
+        Route::get('/summary', [TransportationDeliveryController::class, 'getSummary']);
+        Route::get('/vehicles', [TransportationDeliveryController::class, 'getVehicles']);
+        Route::get('/route-plans', [TransportationDeliveryController::class, 'getRoutePlans']);
+        Route::get('/delivery-tasks', [TransportationDeliveryController::class, 'getDeliveryTasks']);
+        Route::get('/vehicles/{id}', [TransportationDeliveryController::class, 'getVehicleDetails']);
+    });
 });
