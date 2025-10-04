@@ -1,1 +1,1 @@
-web: touch database/database.sqlite && php artisan migrate:fresh --force && php artisan db:seed --force && php -S 0.0.0.0:$PORT public/soh_fix.php
+web: php artisan key:generate --force && php artisan migrate:fresh --force && php artisan db:seed --force && php -S 0.0.0.0:$PORT public/index.php

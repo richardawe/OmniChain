@@ -56,15 +56,38 @@ require __DIR__.'/../vendor/autoload.php';
 
 $app = require_once __DIR__.'/../bootstrap/app.php';
 
-$kernel = $app->make(Kernel::class);
-
-$response = $kernel->handle(
-    $request = Request::capture()
-)->send();
-
-$kernel->terminate($request, $response);
-
-// Only flush if not being included by soh_fix.php
-if (!defined('SKIP_OB_END_FLUSH')) {
-    ob_end_flush();
+// For debugging
+if (isset($_ENV['APP_DEBUG']) && $_ENV['APP_DEBUG'] === 'true') {
+    ini_set('display_errors', 1);
+    ini_set('display_startup_errors', 1);
+    error_reporting(E_ALL);
 }
+
+try {
+    $kernel = $app->make(Kernel::class);
+
+    $response = $kernel->handle(
+        $request = Request::capture()
+    )->send();
+
+    $kernel->terminate($request, $response);
+} catch (Exception $e) {
+    // Log the error
+    error_log('Exception: ' . $e->getMessage() . ' in ' . $e->getFile() . ' on line ' . $e->getLine());
+    error_log($e->getTraceAsString());
+    
+    // Display error in production with limited information
+    http_response_code(500);
+    if (isset($_ENV['APP_DEBUG']) && $_ENV['APP_DEBUG'] === 'true') {
+        echo '<h1>Application Error</h1>';
+        echo '<p>Message: ' . $e->getMessage() . '</p>';
+        echo '<p>File: ' . $e->getFile() . ' on line ' . $e->getLine() . '</p>';
+        echo '<pre>' . $e->getTraceAsString() . '</pre>';
+    } else {
+        echo '<h1>Internal Server Error</h1>';
+        echo '<p>An unexpected error occurred. Please try again later.</p>';
+    }
+}
+
+// Clean output buffer
+ob_end_flush();
