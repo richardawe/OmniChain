@@ -89,5 +89,8 @@ try {
     }
 }
 
-// Clean output buffer
-ob_end_flush();
+// Only flush if not being included by soh_fix.php
+if (!defined('SKIP_OB_END_FLUSH')) {
+    // Clean output buffer
+    ob_end_flush();
+}

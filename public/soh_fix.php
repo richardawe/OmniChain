@@ -8,6 +8,20 @@ define('SKIP_OB_END_FLUSH', true);
 // Include the Laravel index.php file
 require_once __DIR__ . '/index.php';
 
-// At this point, Laravel has already sent the response
-// We don't need to do anything else
+// Now we can safely end the buffer ourselves
+ob_end_clean();
+
+// Start a new buffer for our output
+ob_start();
+
+// Get the application output from the previous buffer
+$output = ob_get_clean();
+
+// Remove SOH character if present at the beginning
+if (strlen($output) > 0 && ord($output[0]) === 1) {
+    $output = substr($output, 1);
+}
+
+// Output the cleaned content
+echo $output;
 ?>
