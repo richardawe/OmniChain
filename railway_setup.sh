@@ -34,23 +34,26 @@ echo "MYSQLDATABASE: ${MYSQLDATABASE:-not set}"
 echo "MYSQLUSER: ${MYSQLUSER:-not set}"
 echo "MYSQLPASSWORD: [hidden]"
 
-# Directly write database config to ensure correct values
+# Try to use hardcoded values since variables aren't expanding
+echo "Using hardcoded values for Railway MySQL..."
+
+# Directly write database config with hardcoded values
 cat >> .env << EOF
 
 # Railway MySQL Configuration
 DB_CONNECTION=mysql
-DB_HOST=${MYSQLHOST}
-DB_PORT=${MYSQLPORT:-3306}
-DB_DATABASE=${MYSQLDATABASE:-railway}
-DB_USERNAME=${MYSQLUSER:-root}
-DB_PASSWORD=${MYSQLPASSWORD}
+DB_HOST=containers-us-west-207.railway.app
+DB_PORT=6443
+DB_DATABASE=railway
+DB_USERNAME=root
+DB_PASSWORD=mDsMHUbafgbKFJkWfKyANeQxWcJSpyvM
 EOF
 
 # Wait for MySQL to be ready
 echo "Waiting for MySQL connection..."
 max_retries=30
 counter=0
-while ! php -r "try { \$pdo = new PDO('mysql:host=${MYSQLHOST};port=${MYSQLPORT:-3306}', '${MYSQLUSER:-root}', '${MYSQLPASSWORD}'); echo 'connected'; } catch(PDOException \$e) { echo \$e->getMessage(); exit(1); }" 2>/dev/null
+while ! php -r "try { \$pdo = new PDO('mysql:host=containers-us-west-207.railway.app;port=6443', 'root', 'mDsMHUbafgbKFJkWfKyANeQxWcJSpyvM'); echo 'connected'; } catch(PDOException \$e) { echo \$e->getMessage(); exit(1); }" 2>/dev/null
 do
     if [ $counter -eq $max_retries ]; then
         echo "Failed to connect to MySQL after $max_retries attempts. Continuing anyway..."
