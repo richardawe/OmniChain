@@ -5,21 +5,22 @@
 // Define a constant to tell index.php not to end the buffer
 define('SKIP_OB_END_FLUSH', true);
 
+// Start our own buffer before including index.php
+ob_start();
+
 // Include the Laravel index.php file
 require_once __DIR__ . '/index.php';
 
-// Now we can safely end the buffer ourselves
+// Get the output from the buffer
+$output = ob_get_contents();
+
+// Clean the buffer
 ob_end_clean();
-
-// Start a new buffer for our output
-ob_start();
-
-// Get the application output from the previous buffer
-$output = ob_get_clean();
 
 // Remove SOH character if present at the beginning
 if (strlen($output) > 0 && ord($output[0]) === 1) {
     $output = substr($output, 1);
+    error_log('SOH character detected and removed by soh_fix.php.');
 }
 
 // Output the cleaned content
