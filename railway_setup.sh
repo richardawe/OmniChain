@@ -34,16 +34,16 @@ echo "MYSQLDATABASE: ${MYSQLDATABASE:-not set}"
 echo "MYSQLUSER: ${MYSQLUSER:-not set}"
 echo "MYSQLPASSWORD: [hidden]"
 
-# Use hardcoded values for MySQL on Railway
-echo "Using hardcoded values for MySQL on Railway..."
+# Use public proxy connection for MySQL on Railway
+echo "Using public proxy connection for MySQL on Railway..."
 
-# Directly write database config with hardcoded values
+# Directly write database config with public proxy connection
 cat >> .env << EOF
 
 # Railway MySQL Configuration
 DB_CONNECTION=mysql
-DB_HOST=mysql.railway.internal
-DB_PORT=3306
+DB_HOST=tramway.proxy.rlwy.net
+DB_PORT=39971
 DB_DATABASE=railway
 DB_USERNAME=root
 DB_PASSWORD=$MYSQL_ROOT_PASSWORD
