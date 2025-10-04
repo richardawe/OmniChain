@@ -31,7 +31,7 @@ Route::get('/raw', function () {
     return '';
 });
 
-// Health check route
+// Health check routes
 Route::get('/health', function () {
     try {
         // Test database connection
@@ -47,6 +47,16 @@ Route::get('/health', function () {
         'version' => config('app.version', '1.0.0'),
         'environment' => config('app.env'),
         'database' => $dbStatus
+    ]);
+});
+
+// Simple health check for Railway
+Route::get('/simple_health.php', function () {
+    return response()->json([
+        'status' => 'ok',
+        'service' => 'OmniChain API',
+        'timestamp' => now()->toIso8601String(),
+        'version' => '1.0.1'
     ]);
 });
 
@@ -114,7 +124,7 @@ Route::get('/module-relationships', function () {
 
 // Driver Management Routes
 Route::get('/driver-management', function () {
-    return inertia('DriverManagement');
+    return inertia('Admin/DriverManagement');
 });
 
 // Fallback route for SPA
