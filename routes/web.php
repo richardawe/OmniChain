@@ -50,6 +50,27 @@ Route::get('/health', function () {
     ]);
 });
 
+// Master Data Routes
+Route::get('/master-data', function () {
+    return inertia('MasterData/Index');
+});
+
+Route::get('/master-data/products', function () {
+    return inertia('MasterData/Products');
+});
+
+Route::get('/master-data/companies', function () {
+    return inertia('MasterData/Companies');
+});
+
+Route::get('/master-data/locations', function () {
+    return inertia('MasterData/Locations');
+});
+
+Route::get('/master-data/employees', function () {
+    return inertia('MasterData/Employees');
+});
+
 // Freight Order Management Routes
 Route::get('/freight-orders', function () {
     return inertia('FreightOrders/Index');
@@ -216,4 +237,9 @@ Route::get('/error/500', function () {
 
 Route::get('/error/maintenance', function () {
     return inertia('Error/Maintenance');
+});
+
+// Fallback route for SPA
+Route::fallback(function () {
+    return inertia('Error/404');
 });
