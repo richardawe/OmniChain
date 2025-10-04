@@ -97,6 +97,26 @@ Route::get('/track-shipment', function () {
     return inertia('TrackShipment');
 });
 
+// Inventory Warehouse Management Routes
+Route::get('/inventory-warehouse-management', function () {
+    return inertia('InventoryWarehouseManagement');
+});
+
+// Manufacturing Management Routes
+Route::get('/manufacturing-management', function () {
+    return inertia('ManufacturingManagement');
+});
+
+// Module Relationships Routes
+Route::get('/module-relationships', function () {
+    return inertia('ModuleRelationships');
+});
+
+// Driver Management Routes
+Route::get('/driver-management', function () {
+    return inertia('DriverManagement');
+});
+
 // Fallback route for SPA
 Route::fallback(function () {
     return inertia('Dashboard');
