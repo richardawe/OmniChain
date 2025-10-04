@@ -1,216 +1,219 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\DashboardController;
-use App\Http\Controllers\DriverAppController;
-use App\Http\Controllers\Admin\DriverManagementController;
+use Inertia\Inertia;
+use Illuminate\Support\Facades\DB;
 
-// Include simple routes
-require_once __DIR__ . '/simple.php';
+/*
+|--------------------------------------------------------------------------
+| Web Routes
+|--------------------------------------------------------------------------
+|
+| Here is where you can register web routes for your application. These
+| routes are loaded by the RouteServiceProvider and all of them will
+| be assigned to the "web" middleware group. Make something great!
+|
+*/
 
-// Simple health check route for Railway
-Route::get('/health', function () {
-    return response()->json([
-        'status' => 'healthy',
-        'timestamp' => now()->toISOString(),
-        'message' => 'OmniChain is running'
-    ]);
-});
-
-// Test routes for debugging
-Route::get('/test', function () {
-    return 'OmniChain is working!';
-});
-
-Route::get('/status', function () {
-    return response()->json([
-        'status' => 'ok',
-        'time' => date('Y-m-d H:i:s'),
-        'php_version' => PHP_VERSION,
-        'laravel_version' => app()->version()
-    ]);
-});
-
-Route::get('/info', function () {
-    return response()->json([
-        'php_version' => PHP_VERSION,
-        'laravel_version' => app()->version(),
-        'environment' => app()->environment(),
-        'debug' => config('app.debug'),
-        'timezone' => config('app.timezone'),
-        'extensions' => get_loaded_extensions()
-    ]);
-});
-
-// Ultra simple test route
+// Root route for the main dashboard
 Route::get('/', function () {
     return inertia('Dashboard');
 });
 
-Route::get('/weather-logistics', function () {
-    return inertia('WeatherLogistics');
-});
-
-Route::get('/weather-test', function () {
-    return inertia('WeatherTest');
-});
-
-Route::get('/debug-inertia', function () {
-    return inertia('WeatherTest', [
-        'debug' => 'This is a test message from Laravel',
-        'timestamp' => now()->toISOString()
-    ]);
-});
-
-Route::get('/simple-test', function () {
-    return inertia('SimpleTest', [
-        'debug' => 'This is a test message from Laravel',
-        'timestamp' => now()->toISOString()
-    ]);
-});
-
-Route::get('/inertia-debug', function () {
-    return response()->json([
-        'message' => 'This is a JSON response to test if the route is working',
-        'timestamp' => now()->toISOString()
-    ]);
-});
-
-Route::get('/basic-test', function () {
-    return inertia('BasicTest');
-});
-
-Route::get('/weather-simple', function () {
-    return '<h1>Simple Test - This should work!</h1><p>If you see this, the route is working.</p>';
-});
-
-Route::get('/driver-management', function () {
-    return inertia('Admin/DriverManagement');
-});
-
-// Driver login route (alternative path)
-Route::get('/login/driver', [DriverAppController::class, 'login'])->name('driver.login.alt');
-
-// Even simpler test
+// Test route to check if the application is working
 Route::get('/test', function () {
     return 'Test route works!';
 });
 
-// Raw PHP test
+// Raw PHP output test
 Route::get('/raw', function () {
     echo 'Raw PHP output';
     return '';
 });
 
-// Test Inertia route
-Route::get('/test-inertia', function () {
-    try {
-        return inertia('Dashboard');
-    } catch (Exception $e) {
-        return response()->json([
-            'error' => 'Inertia failed',
-            'message' => $e->getMessage(),
-            'trace' => $e->getTraceAsString()
-        ]);
-    }
-});
-
-// Healthcheck route for Railway
+// Health check route
 Route::get('/health', function () {
+    try {
+        // Test database connection
+        DB::connection()->getPdo();
+        $dbStatus = 'connected';
+    } catch (\Exception $e) {
+        $dbStatus = 'error: ' . $e->getMessage();
+    }
+
     return response()->json([
-        'message' => 'OmniChain API is running',
-        'version' => '1.0.0',
-        'timestamp' => date('Y-m-d H:i:s'),
-        'status' => 'healthy',
-        'php_version' => PHP_VERSION,
-        'laravel_version' => app()->version()
+        'status' => 'ok',
+        'timestamp' => now()->toIso8601String(),
+        'version' => config('app.version', '1.0.0'),
+        'environment' => config('app.env'),
+        'database' => $dbStatus
     ]);
 });
 
-// Ultra-simple route for debugging
-Route::get('/ping', function () {
-    return 'pong';
+// Freight Order Management Routes
+Route::get('/freight-orders', function () {
+    return inertia('FreightOrders/Index');
 });
 
-// Debug route for CORS and API testing
-Route::get('/debug-cors', function () {
-    return response()->json([
-        'cors_enabled' => true,
-        'openweather_key' => env('OPENWEATHER_API_KEY', '7ba818bbe65339f2fc489561e114d7be'),
-        'openroute_key' => env('OPENROUTE_API_KEY', 'eyJvcmciOiI1YjNjZTM1OTc4NTExMTAwMDFjZjYyNDgiLCJpZCI6ImM4ZjI4MjJmYWU2MzRiYTZhMjk5NWM0YWI2MGJkMGQ2IiwiaCI6Im11cm11cjY0In0='),
-        'timestamp' => now()->toISOString(),
-        'test_weather' => json_decode(file_get_contents('https://api.openweathermap.org/data/2.5/weather?q=Chicago&appid=7ba818bbe65339f2fc489561e114d7be&units=metric'))
-    ])->header('Access-Control-Allow-Origin', '*');
+Route::get('/freight-orders/create', function () {
+    return inertia('FreightOrders/Create');
 });
 
-// Debug route to check environment
-Route::get('/debug', function () {
-    return response()->json([
-        'app_name' => config('app.name'),
-        'app_url' => config('app.url'),
-        'app_env' => config('app.env'),
-        'app_debug' => config('app.debug'),
-        'vite_app_name' => env('VITE_APP_NAME'),
-        'has_openroute_key' => !empty(env('OPENROUTE_API_KEY')),
-        'has_openweather_key' => !empty(env('OPENWEATHER_API_KEY')),
-        'build_exists' => file_exists(public_path('build/manifest.json')),
-        'database_url' => !empty(env('DATABASE_URL')),
-        'redis_url' => !empty(env('REDIS_URL')),
-        'railway_private_domain' => env('RAILWAY_PRIVATE_DOMAIN'),
-        'postgres_db' => env('POSTGRES_DB'),
-        'postgres_user' => env('POSTGRES_USER'),
-        'redishost' => env('REDISHOST'),
-        'redisport' => env('REDISPORT'),
-        'timestamp' => now()
+Route::get('/freight-orders/{id}', function ($id) {
+    return inertia('FreightOrders/Show', [
+        'orderId' => $id
     ]);
 });
 
-Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+// Shipment Tracking Routes
 Route::get('/track-shipment', function () {
     return inertia('TrackShipment');
-})->name('track-shipment');
-Route::get('/master-data', function () {
-    return inertia('MasterData');
-})->name('master-data');
-
-Route::get('/supplier-procurement', function () {
-    return inertia('SupplierProcurement');
-})->name('supplier-procurement');
-
-Route::get('/transportation-management', function () {
-    return inertia('TransportationManagement');
-})->name('transportation-management');
-
-Route::get('/delivery-management', function () {
-    return inertia('DeliveryManagement');
-})->name('delivery-management');
-
-Route::get('/manufacturing-management', function () {
-    return inertia('ManufacturingManagement');
-})->name('manufacturing-management');
-
-Route::get('/inventory-warehouse-management', function () {
-    return inertia('InventoryWarehouseManagement');
-})->name('inventory-warehouse-management');
-
-Route::get('/returns-management', function () {
-    return inertia('ReturnsManagement');
-})->name('returns-management');
-
-Route::get('/module-relationships', function () {
-    return inertia('ModuleRelationships');
-})->name('module-relationships');
-
-// Driver App Routes
-Route::prefix('driver')->group(function () {
-    Route::get('/', [DriverAppController::class, 'index'])->name('driver.app');
-    Route::get('/login', [DriverAppController::class, 'login'])->name('driver.login');
-    Route::get('/register', [DriverAppController::class, 'register'])->name('driver.register');
-    Route::get('/pending-approval', [DriverAppController::class, 'pendingApproval'])->name('driver.pending-approval');
-    Route::get('/offline', [DriverAppController::class, 'offline'])->name('driver.offline');
 });
 
-// Admin Routes
-Route::prefix('admin')->group(function () {
-    Route::get('/drivers', [DriverManagementController::class, 'index'])->name('admin.drivers');
+Route::get('/track-shipment/{orderNumber}', function ($orderNumber) {
+    return inertia('TrackShipment', [
+        'orderNumber' => $orderNumber
+    ]);
+});
+
+// Control Tower Routes
+Route::get('/control-tower', function () {
+    return inertia('ControlTower');
+});
+
+Route::get('/control-tower/map', function () {
+    return inertia('ControlTower/Map');
+});
+
+Route::get('/control-tower/analytics', function () {
+    return inertia('ControlTower/Analytics');
+});
+
+// Company Management Routes
+Route::get('/companies', function () {
+    return inertia('Companies/Index');
+});
+
+Route::get('/companies/create', function () {
+    return inertia('Companies/Create');
+});
+
+Route::get('/companies/{id}', function ($id) {
+    return inertia('Companies/Show', [
+        'companyId' => $id
+    ]);
+});
+
+// Location Management Routes
+Route::get('/locations', function () {
+    return inertia('Locations/Index');
+});
+
+Route::get('/locations/create', function () {
+    return inertia('Locations/Create');
+});
+
+Route::get('/locations/{id}', function ($id) {
+    return inertia('Locations/Show', [
+        'locationId' => $id
+    ]);
+});
+
+// Driver App Routes
+Route::get('/driver/login', function () {
+    return inertia('Driver/Login');
+});
+
+Route::get('/driver/dashboard', function () {
+    return inertia('Driver/Dashboard');
+});
+
+Route::get('/driver/assignments', function () {
+    return inertia('Driver/Assignments');
+});
+
+Route::get('/driver/assignment/{id}', function ($id) {
+    return inertia('Driver/Assignment', [
+        'assignmentId' => $id
+    ]);
+});
+
+// Supplier & Procurement Routes
+Route::get('/procurement/dashboard', function () {
+    return inertia('Procurement/Dashboard');
+});
+
+Route::get('/procurement/suppliers', function () {
+    return inertia('Procurement/Suppliers');
+});
+
+Route::get('/procurement/purchase-orders', function () {
+    return inertia('Procurement/PurchaseOrders');
+});
+
+// Manufacturing Routes
+Route::get('/manufacturing/dashboard', function () {
+    return inertia('Manufacturing/Dashboard');
+});
+
+Route::get('/manufacturing/work-orders', function () {
+    return inertia('Manufacturing/WorkOrders');
+});
+
+// Inventory & Warehouse Routes
+Route::get('/inventory/dashboard', function () {
+    return inertia('Inventory/Dashboard');
+});
+
+Route::get('/inventory/stock-levels', function () {
+    return inertia('Inventory/StockLevels');
+});
+
+// Returns Management Routes
+Route::get('/returns/dashboard', function () {
+    return inertia('Returns/Dashboard');
+});
+
+Route::get('/returns/requests', function () {
+    return inertia('Returns/Requests');
+});
+
+// Settings Routes
+Route::get('/settings', function () {
+    return inertia('Settings');
+});
+
+Route::get('/settings/users', function () {
+    return inertia('Settings/Users');
+});
+
+Route::get('/settings/api-keys', function () {
+    return inertia('Settings/ApiKeys');
+});
+
+// Profile Routes
+Route::get('/profile', function () {
+    return inertia('Profile');
+});
+
+// Help & Documentation Routes
+Route::get('/help', function () {
+    return inertia('Help');
+});
+
+Route::get('/help/api-docs', function () {
+    return inertia('Help/ApiDocs');
+});
+
+// Error Pages
+Route::get('/error/404', function () {
+    return inertia('Error/404');
+});
+
+Route::get('/error/500', function () {
+    return inertia('Error/500');
+});
+
+Route::get('/error/maintenance', function () {
+    return inertia('Error/Maintenance');
 });
