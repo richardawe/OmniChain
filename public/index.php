@@ -1,15 +1,5 @@
 <?php
 
-// Fix for output issues - ensure no control characters are output
-ob_start(function($buffer) {
-    // Remove the SOH character (ASCII 0x01) if it's the very first character
-    if (strlen($buffer) > 0 && ord($buffer[0]) === 1) {
-        error_log('SOH character detected and removed by index.php callback.');
-        return substr($buffer, 1);
-    }
-    return $buffer;
-});
-
 use Illuminate\Contracts\Http\Kernel;
 use Illuminate\Http\Request;
 
@@ -87,10 +77,4 @@ try {
         echo '<h1>Internal Server Error</h1>';
         echo '<p>An unexpected error occurred. Please try again later.</p>';
     }
-}
-
-// Only flush if not being included by soh_fix.php
-if (!defined('SKIP_OB_END_FLUSH')) {
-    // Clean output buffer
-    ob_end_flush();
 }
