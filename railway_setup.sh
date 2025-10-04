@@ -34,19 +34,49 @@ echo "MYSQLDATABASE: ${MYSQLDATABASE:-not set}"
 echo "MYSQLUSER: ${MYSQLUSER:-not set}"
 echo "MYSQLPASSWORD: [hidden]"
 
-# Use public proxy connection for MySQL on Railway
-echo "Using public proxy connection for MySQL on Railway..."
+# Use Railway's MYSQL_URL variable
+echo "Using Railway's MYSQL_URL variable..."
 
-# Directly write database config with public proxy connection
+# Check if MYSQL_URL is set
+if [ -n "$MYSQL_URL" ]; then
+    echo "MYSQL_URL is set, using it for database connection"
+    
+    # Parse the MYSQL_URL to extract components
+    # Format: mysql://username:password@hostname:port/database
+    DB_USERNAME=$(echo $MYSQL_URL | sed -n 's/mysql:\/\/\([^:]*\):.*/\1/p')
+    DB_PASSWORD=$(echo $MYSQL_URL | sed -n 's/mysql:\/\/[^:]*:\([^@]*\).*/\1/p')
+    DB_HOST=$(echo $MYSQL_URL | sed -n 's/mysql:\/\/[^:]*:[^@]*@\([^:]*\).*/\1/p')
+    DB_PORT=$(echo $MYSQL_URL | sed -n 's/mysql:\/\/[^:]*:[^@]*@[^:]*:\([^/]*\).*/\1/p')
+    DB_DATABASE=$(echo $MYSQL_URL | sed -n 's/mysql:\/\/[^:]*:[^@]*@[^:]*:[^/]*\/\(.*\)/\1/p')
+    
+    echo "Extracted from MYSQL_URL:"
+    echo "Host: $DB_HOST"
+    echo "Port: $DB_PORT"
+    echo "Database: $DB_DATABASE"
+    echo "Username: $DB_USERNAME"
+    echo "Password: [hidden]"
+else
+    echo "MYSQL_URL not set, using fallback values"
+    DB_HOST="tramway.proxy.rlwy.net"
+    DB_PORT="39971"
+    DB_DATABASE="railway"
+    DB_USERNAME="root"
+    DB_PASSWORD="$MYSQL_ROOT_PASSWORD"
+fi
+
+# Write database config to .env
 cat >> .env << EOF
 
 # Railway MySQL Configuration
 DB_CONNECTION=mysql
-DB_HOST=tramway.proxy.rlwy.net
-DB_PORT=39971
-DB_DATABASE=railway
-DB_USERNAME=root
-DB_PASSWORD=$MYSQL_ROOT_PASSWORD
+DB_HOST=$DB_HOST
+DB_PORT=$DB_PORT
+DB_DATABASE=$DB_DATABASE
+DB_USERNAME=$DB_USERNAME
+DB_PASSWORD=$DB_PASSWORD
+
+# Original MYSQL_URL
+MYSQL_URL=$MYSQL_URL
 EOF
 
 # Print what we've written to .env for debugging
