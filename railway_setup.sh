@@ -34,15 +34,15 @@ echo "MYSQLDATABASE: ${MYSQLDATABASE:-not set}"
 echo "MYSQLUSER: ${MYSQLUSER:-not set}"
 echo "MYSQLPASSWORD: [hidden]"
 
-# Try to use Railway's variable reference format
-echo "Using Railway variable reference format..."
+# Use hardcoded values for MySQL on Railway
+echo "Using hardcoded values for MySQL on Railway..."
 
-# Directly write database config with Railway's variable reference format
+# Directly write database config with hardcoded values
 cat >> .env << EOF
 
 # Railway MySQL Configuration
 DB_CONNECTION=mysql
-DB_HOST=$RAILWAY_PRIVATE_DOMAIN
+DB_HOST=mysql.railway.internal
 DB_PORT=3306
 DB_DATABASE=railway
 DB_USERNAME=root
