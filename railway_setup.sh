@@ -34,26 +34,39 @@ echo "MYSQLDATABASE: ${MYSQLDATABASE:-not set}"
 echo "MYSQLUSER: ${MYSQLUSER:-not set}"
 echo "MYSQLPASSWORD: [hidden]"
 
-# Try to use hardcoded values since variables aren't expanding
-echo "Using hardcoded values for Railway MySQL..."
+# Try to use Railway's variable reference format
+echo "Using Railway variable reference format..."
 
-# Directly write database config with hardcoded values
+# Directly write database config with Railway's variable reference format
 cat >> .env << EOF
 
 # Railway MySQL Configuration
 DB_CONNECTION=mysql
-DB_HOST=containers-us-west-207.railway.app
-DB_PORT=6443
+DB_HOST=$RAILWAY_PRIVATE_DOMAIN
+DB_PORT=3306
 DB_DATABASE=railway
 DB_USERNAME=root
-DB_PASSWORD=mDsMHUbafgbKFJkWfKyANeQxWcJSpyvM
+DB_PASSWORD=$MYSQL_ROOT_PASSWORD
 EOF
+
+# Print what we've written to .env for debugging
+echo "Written to .env:"
+grep -A 5 "Railway MySQL Configuration" .env
 
 # Wait for MySQL to be ready
 echo "Waiting for MySQL connection..."
 max_retries=30
 counter=0
-while ! php -r "try { \$pdo = new PDO('mysql:host=containers-us-west-207.railway.app;port=6443', 'root', 'mDsMHUbafgbKFJkWfKyANeQxWcJSpyvM'); echo 'connected'; } catch(PDOException \$e) { echo \$e->getMessage(); exit(1); }" 2>/dev/null
+
+# Get the actual values from .env for connection test
+DB_HOST=$(grep "DB_HOST" .env | tail -1 | cut -d '=' -f2)
+DB_PORT=$(grep "DB_PORT" .env | tail -1 | cut -d '=' -f2)
+DB_USERNAME=$(grep "DB_USERNAME" .env | tail -1 | cut -d '=' -f2)
+DB_PASSWORD=$(grep "DB_PASSWORD" .env | tail -1 | cut -d '=' -f2)
+
+echo "Trying to connect to MySQL at $DB_HOST:$DB_PORT as $DB_USERNAME"
+
+while ! php -r "try { \$pdo = new PDO('mysql:host=\"$DB_HOST\";port=$DB_PORT', '$DB_USERNAME', '$DB_PASSWORD'); echo 'connected'; } catch(PDOException \$e) { echo \$e->getMessage(); exit(1); }" 2>/dev/null
 do
     if [ $counter -eq $max_retries ]; then
         echo "Failed to connect to MySQL after $max_retries attempts. Continuing anyway..."
